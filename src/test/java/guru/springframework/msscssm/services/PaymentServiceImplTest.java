@@ -4,6 +4,7 @@ import guru.springframework.msscssm.domain.Payment;
 import guru.springframework.msscssm.domain.PaymentEvent;
 import guru.springframework.msscssm.domain.PaymentState;
 import guru.springframework.msscssm.repository.PaymentRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Slf4j
 @SpringBootTest
 class PaymentServiceImplTest {
 
@@ -34,16 +36,12 @@ class PaymentServiceImplTest {
     @Test
     void preAuth() {
         Payment savedPayment = paymentService.newPayment(this.payment);
-
         StateMachine<PaymentState, PaymentEvent> stateMachine = paymentService.preAuth(savedPayment.getId());
-
         Payment preAuthedPayment = paymentRepository.findById(savedPayment.getId()).orElse(null);
 
-        System.out.println(stateMachine.getState().getId());
-
-        System.out.println(preAuthedPayment);
+        log.info("Should be PRE_AUTH or PRE_AUTH_ERROR: {}", stateMachine.getState().getId());
+        log.info("PreAuthedPayment: {}", preAuthedPayment);
 
         assertEquals(PaymentState.NEW, savedPayment.getState());
-        assertEquals(PaymentState.PRE_AUTH, stateMachine.getState().getId());
     }
 }
