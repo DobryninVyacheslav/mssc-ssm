@@ -12,6 +12,8 @@ import org.springframework.statemachine.StateMachine;
 
 import java.math.BigDecimal;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @SpringBootTest
 class PaymentServiceImplTest {
 
@@ -40,5 +42,8 @@ class PaymentServiceImplTest {
         System.out.println(stateMachine.getState().getId());
 
         System.out.println(preAuthedPayment);
+
+        assertEquals(PaymentState.NEW, savedPayment.getState());
+        assertEquals(PaymentState.PRE_AUTH, stateMachine.getState().getId());
     }
 }
